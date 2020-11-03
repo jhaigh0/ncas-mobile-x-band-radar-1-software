@@ -10,7 +10,7 @@ from convert.output_handler.database_handler import DataBaseHandler
 from convert.output_handler.file_system_handler import FileSystemHandler
 # ----
 import re
-import SETTINGS
+import convert.SETTINGS
 import subprocess
 
 
@@ -116,14 +116,17 @@ def _get_results_handler(n_facets, sep, error_types):
     :param sep: (str) Delimeter for facet separation in identifier.
     :param error_types: (list) List of the string names of the types of
     errors that can occur.
+
+    :return: BaseHandler (Either DatabaseHandler or FilwSystemHandler)
+    to interact with log outputs
     """
 
     if SETTINGS.BACKEND == 'db':
         constring = os.environ.get("ABCUNIT_DB_SETTINGS")
         if not constring:
             raise KeyError('Please create environment variable ABCUNI_DB_SETTINGS'
-                            'in for format of "dbname=<db_name> user=<user_name>'
-                            'host=<host_name> password=<password>"')
+                           'in for format of "dbname=<db_name> user=<user_name>'
+                           'host=<host_name> password=<password>"')
         return DataBaseHandler(constring, error_types)
     elif SETTINGS.BACKEND == 'file':
         return FileSystemHandler(n_facets, sep, error_types)
